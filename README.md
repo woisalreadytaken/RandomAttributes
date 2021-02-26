@@ -2,8 +2,7 @@
 
 Super scuffed pseudo-gamemode that gives random attributes to weapons, made in a way that's compatible with vanilla and custom gamemodes.
 
-Currently deemed incomplete. It works fine, but is missing features such as seeing your own attributes.
-
+Currently deemed incomplete. It works fine, but is a bit rough internally.
 ## Dependencies
 - SourceMod 1.10
 - [TF2Attributes](https://forums.alliedmods.net/showthread.php?t=210221)
