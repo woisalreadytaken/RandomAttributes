@@ -24,7 +24,7 @@ ConVar g_cvRerollDeath;
 
 public ArrayList g_aAttributes;
 public ArrayList g_aClientAttributes[TF_MAXPLAYERS][MAX_WEAPON_SLOTS];
-public bool g_bAppliedAttribute[TF_MAXPLAYERS][MAX_WEAPON_SLOTS];
+public bool g_bDisplayedAttributes[TF_MAXPLAYERS][MAX_WEAPON_SLOTS];
 public int g_iAttributeAmount;
 
 char g_sSlotName[][] = {
@@ -226,6 +226,7 @@ void UpdateClientSlot(int iClient, int iSlot, bool bRefresh = true)
 		
 	//Store new information for a specific weapon slot of a client so it can be added later
 	g_aClientAttributes[iClient][iSlot].Clear();
+	g_bDisplayedAttributes[iClient][iSlot] = false;
 	
 	if (IsClientInGame(iClient))
 	{
@@ -233,8 +234,6 @@ void UpdateClientSlot(int iClient, int iSlot, bool bRefresh = true)
 	
 		if (bRefresh && iWeapon > MaxClients && IsValidEdict(iWeapon))
 			TF2Attrib_RemoveAll(iWeapon);
-		
-		g_bAppliedAttribute[iClient][iSlot] = false;
 	}
 		
 	for (int i = 0; i < g_cvAttributesPerWeapon.IntValue; i++)
@@ -280,29 +279,39 @@ void ApplyToWeapon(int iWeapon, int iClient, int iSlot)
 	if (iLength > iExpectedLength)
 		iLength = iExpectedLength;
 	
-	char sAttributes[1024];
-	if (!g_bAppliedAttribute[iClient][iSlot])
-		Format(sAttributes, sizeof(sAttributes), "%s\n%s\n%s\n", PLACEHOLDER_LINE, g_sSlotName[iSlot], PLACEHOLDER_LINE);
-	
 	//Get each attribute stored for that slot and apply them to the weapon!
 	for (int i = 0; i < iLength; i++)
 	{
 		ClientAttribute attribute;
 		g_aClientAttributes[iClient][iSlot].GetArray(i, attribute);
 		TF2Attrib_SetByDefIndex(iWeapon, attribute.iIndex, attribute.flValue);
-		
-		if (!g_bAppliedAttribute[iClient][iSlot])
-		{
-			char sAttribute[128];
-			TF2Econ_GetAttributeName(attribute.iIndex, sAttribute, sizeof(sAttribute));
-			Format(sAttribute, sizeof(sAttribute), "%s: %.2f\n", sAttribute, attribute.flValue);
-			StrCat(sAttributes, sizeof(sAttributes), sAttribute);
-		}
 	}
 	
-	if (!g_bAppliedAttribute[iClient][iSlot])
-		PrintToConsole(iClient, sAttributes);
-	
 	TF2Attrib_ClearCache(iWeapon);
-	g_bAppliedAttribute[iClient][iSlot] = true;
+	DisplaySlotAttributeNames(iClient, iSlot);
+}
+
+void DisplaySlotAttributeNames(int iClient, int iSlot)
+{
+	if (g_bDisplayedAttributes[iClient][iSlot])
+		return;
+	
+	char sAttributes[1024];
+	Format(sAttributes, sizeof(sAttributes), "%s\n%s\n%s\n", PLACEHOLDER_LINE, g_sSlotName[iSlot], PLACEHOLDER_LINE);
+	
+	int iLength = g_aClientAttributes[iClient][iSlot].Length;
+	
+	for (int i = 0; i < iLength; i++)
+	{
+		ClientAttribute attribute;
+		g_aClientAttributes[iClient][iSlot].GetArray(i, attribute);
+		
+		char sAttribute[128];
+		TF2Econ_GetAttributeName(attribute.iIndex, sAttribute, sizeof(sAttribute));
+		Format(sAttribute, sizeof(sAttribute), "%s: %.2f\n", sAttribute, attribute.flValue);
+		StrCat(sAttributes, sizeof(sAttributes), sAttribute);
+	}
+	
+	PrintToConsole(iClient, sAttributes);
+	g_bDisplayedAttributes[iClient][iSlot] = true;
 }
