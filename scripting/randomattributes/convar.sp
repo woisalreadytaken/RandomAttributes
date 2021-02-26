@@ -2,7 +2,7 @@ void ConVar_Init()
 {
 	g_cvEnabled = CreateConVar("sm_ra_enabled", "1", "Is Random Attributes enabled?", _, true, 0.0, true, 1.0);
 	g_cvEnabled.AddChangeHook(ConVar_EnableChanged);
-	g_cvApplyOnWeaponCreation = CreateConVar("sm_ra_applyonweaponcreation", "1", "Should attributes be applied when a weapon is created?\n0: No, only apply when inventory is refreshed. Meant for vanilla gamemodes or custom gamemodes that only give weapons upon spawning/inventory update (such as Randomizer)\n1: Yes. This option makes this plugin compatible with custom gamemodes/plugins that can give you custom weapons mid-round (such as Super Zombie Fortress) but has the side effect of applying attributes twice if weapons are given on player spawn", _, true, 0.0, true, 1.0);
+	g_cvApplyOnWeaponCreation = CreateConVar("sm_ra_applyonweaponcreation", "0", "Should attributes be applied when a weapon is created?\n0: No, only apply when inventory is refreshed. Meant for vanilla gamemodes or custom gamemodes that only give weapons upon spawning/inventory update (such as Randomizer)\n1: Yes. This option makes this plugin compatible with custom gamemodes/plugins that can give you custom weapons mid-round (such as Super Zombie Fortress) but has the side effect of applying attributes twice if weapons are given on player spawn", _, true, 0.0, true, 1.0);
 	g_cvAttributesPerWeapon = CreateConVar("sm_ra_amount", "8", "Amount of random attributes to roll per weapon.", _, true, 1.0, true, 20.0);
 	g_cvAttributesPerWeapon.AddChangeHook(ConVar_AmountChanged);
 	g_cvAttributesPerWeaponUpdate = CreateConVar("sm_ra_amountupdate", "0", "Should attributes be rerolled the moment sm_ra_amount is changed?\n0: No, update when it otherwise would\n1: Yes", _, true, 0.0, true, 1.0);
