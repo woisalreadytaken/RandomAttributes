@@ -13,6 +13,7 @@
 #define TF_MAXPLAYERS 		34	//32 clients + 1 for 0/world/console + 1 for replay/SourceTV
 #define MAX_WEAPON_SLOTS 	3
 #define MAX_ATTRIBUTES 		512
+#define PLACEHOLDER_LINE 	"-----------------------------------------"
 
 ConVar g_cvEnabled;
 ConVar g_cvApplyOnWeaponCreation;
@@ -23,7 +24,14 @@ ConVar g_cvRerollDeath;
 
 public ArrayList g_aAttributes;
 public ArrayList g_aClientAttributes[TF_MAXPLAYERS][MAX_WEAPON_SLOTS];
+public bool g_bAppliedAttribute[TF_MAXPLAYERS][MAX_WEAPON_SLOTS];
 public int g_iAttributeAmount;
+
+char g_sSlotName[][] = {
+	"Primary",
+	"Secondary",
+	"Melee"
+};
 
 enum struct ConfigAttribute
 {
@@ -225,6 +233,8 @@ void UpdateClientSlot(int iClient, int iSlot, bool bRefresh = true)
 	
 		if (bRefresh && iWeapon > MaxClients && IsValidEdict(iWeapon))
 			TF2Attrib_RemoveAll(iWeapon);
+		
+		g_bAppliedAttribute[iClient][iSlot] = false;
 	}
 		
 	for (int i = 0; i < g_cvAttributesPerWeapon.IntValue; i++)
@@ -270,13 +280,29 @@ void ApplyToWeapon(int iWeapon, int iClient, int iSlot)
 	if (iLength > iExpectedLength)
 		iLength = iExpectedLength;
 	
+	char sAttributes[1024];
+	if (!g_bAppliedAttribute[iClient][iSlot])
+		Format(sAttributes, sizeof(sAttributes), "%s\n%s\n%s\n", PLACEHOLDER_LINE, g_sSlotName[iSlot], PLACEHOLDER_LINE);
+	
 	//Get each attribute stored for that slot and apply them to the weapon!
 	for (int i = 0; i < iLength; i++)
 	{
 		ClientAttribute attribute;
 		g_aClientAttributes[iClient][iSlot].GetArray(i, attribute);
 		TF2Attrib_SetByDefIndex(iWeapon, attribute.iIndex, attribute.flValue);
+		
+		if (!g_bAppliedAttribute[iClient][iSlot])
+		{
+			char sAttribute[128];
+			TF2Econ_GetAttributeName(attribute.iIndex, sAttribute, sizeof(sAttribute));
+			Format(sAttribute, sizeof(sAttribute), "%s: %.2f\n", sAttribute, attribute.flValue);
+			StrCat(sAttributes, sizeof(sAttributes), sAttribute);
+		}
 	}
 	
+	if (!g_bAppliedAttribute[iClient][iSlot])
+		PrintToConsole(iClient, sAttributes);
+	
 	TF2Attrib_ClearCache(iWeapon);
+	g_bAppliedAttribute[iClient][iSlot] = true;
 }
