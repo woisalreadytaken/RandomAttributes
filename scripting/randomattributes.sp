@@ -16,11 +16,12 @@
 #define PLACEHOLDER_LINE 	"-----------------------------------------"
 
 ConVar g_cvEnabled;
+ConVar g_cvActiveOnlyMode;
 ConVar g_cvApplyOnWeaponCreation;
 ConVar g_cvAttributesPerWeapon;
 ConVar g_cvAttributesPerWeaponUpdate;
-ConVar g_cvRerollSlot;
 ConVar g_cvRerollDeath;
+ConVar g_cvRerollSlot;
 
 public ArrayList g_aAttributes;
 public ArrayList g_aClientAttributes[TF_MAXPLAYERS][MAX_WEAPON_SLOTS];
@@ -228,14 +229,25 @@ void UpdateClientSlot(int iClient, int iSlot, bool bRefresh = true)
 	g_aClientAttributes[iClient][iSlot].Clear();
 	g_bDisplayedAttributes[iClient][iSlot] = false;
 	
-	if (IsClientInGame(iClient))
+	if (bRefresh && IsClientInGame(iClient))
 	{
 		int iWeapon = GetPlayerWeaponSlot(iClient, iSlot);
 	
-		if (bRefresh && iWeapon > MaxClients && IsValidEdict(iWeapon))
+		if (iWeapon > MaxClients && IsValidEdict(iWeapon))
 			TF2Attrib_RemoveAll(iWeapon);
 	}
+	
+	//If Active Only mode is, heh, active, add the 'provide on active' attribute first
+	if (g_cvActiveOnlyMode.BoolValue)
+	{
+		ClientAttribute attribute;
 		
+		attribute.iIndex = 128;
+		attribute.flValue = 1.0;
+		
+		g_aClientAttributes[iClient][iSlot].PushArray(attribute);
+	}
+	
 	for (int i = 0; i < g_cvAttributesPerWeapon.IntValue; i++)
 	{
 		ClientAttribute attributeClient;
