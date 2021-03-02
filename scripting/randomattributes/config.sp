@@ -47,12 +47,12 @@ void Config_Refresh()
 	int iAttribCount = 0;
 	do
 	{
-		char sIndex[INDEX_MAX_LENGTH], sType[8], sMin[8], sMax[8];
+		char sIndex[INDEX_MAX_LENGTH], sType[8];
 		int iType = -1;
 		kv.GetSectionName(sIndex, sizeof(sIndex));
 		kv.GetString("type", sType, sizeof(sType));
-		kv.GetString("min", sMin, sizeof(sMin));
-		kv.GetString("max", sMax, sizeof(sMax));
+		float flMin = kv.GetFloat("min", 0.0);
+		float flMax = kv.GetFloat("max", 0.0);
 		
 		if (StrEqual(sType, "int", false))
 		{
@@ -73,69 +73,20 @@ void Config_Refresh()
 		
 		for (int i = 0; i < iLength; i++)
 		{
-			int iValue;
+			int iIndex;
 			
-			if (!StringToIntEx(sArray[i], iValue))
+			if (!StringToIntEx(sArray[i], iIndex))
 			{
-				LogError("Random Attributes config couldn't read attribute index %s", sIndex);
+				LogError("Random Attributes config couldn't read attribute index %s", sArray[i]);
 				continue;
 			}
 			
 			ConfigAttribute attribute;
-			attribute.iIndex = iValue;
+			attribute.iIndex = iIndex;
 			attribute.iType = iType;
+			attribute.flMin = flMin;
+			attribute.flMax = flMax;
 			
-			switch(iType)
-			{
-				case ConfigAttributeType_Int:
-				{
-					if (StringToIntEx(sMin, iValue))
-					{
-						attribute.flMin = float(iValue);
-					}
-					else
-					{
-						LogError("Random Attributes config's index %s has an invalid minimum value (integer): %s", sArray[i], sMin);
-						continue;
-					}
-					
-					if (StringToIntEx(sMax, iValue))
-					{
-						attribute.flMax = float(iValue);
-					}
-					else
-					{
-						LogError("Random Attributes config's index %s has an invalid maximum value (integer): %s", sArray[i], sMax);
-						continue;
-					}
-				}
-				
-				case ConfigAttributeType_Float:
-				{
-					float flValue;
-					
-					if (StringToFloatEx(sMin, flValue))
-					{
-						attribute.flMin = flValue;
-					}
-					else
-					{
-						LogError("Random Attributes config's index %s has an invalid minimum value (float): %s", sArray[i], sMin);
-						continue;
-					}
-					
-					if (StringToFloatEx(sMax, flValue))
-					{
-						attribute.flMax = flValue;
-					}
-					else
-					{
-						LogError("Random Attributes config's index %s has an invalid maximum value (float): %s", sArray[i], sMax);
-						continue;
-					}
-				}
-				
-			}
 			g_aAttributes.PushArray(attribute);
 			iAttribCount++;
 		}
