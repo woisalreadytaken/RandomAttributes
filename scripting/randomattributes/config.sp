@@ -145,8 +145,7 @@ void Config_RefreshSettings()
 	}
 	
 	bool bDone = false;
-	ConVar cvGamemode;
-	cvGamemode = FindConVar("redsun_currentgamemode");
+	ConVar cvGamemode = FindConVar("redsun_currentgamemode");
 	
 	if (cvGamemode != INVALID_HANDLE)
 	{

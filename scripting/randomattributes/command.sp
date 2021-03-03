@@ -20,6 +20,7 @@ public Action Command_RefreshSettingsConfig(int iClient, int iArgs)
 	
 	if (0 < iClient <= MaxClients && IsClientInGame(iClient))
 		ReplyToCommand(iClient, "Attempted to refresh Random Attributes' map settings config.");
+}
 
 public Action Command_RefreshConfigs(int iClient, int iArgs)
 {
