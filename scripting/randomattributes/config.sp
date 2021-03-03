@@ -1,4 +1,5 @@
-#define CONFIG_FILEPATH 	"configs/randomattributes.cfg"
+#define CONFIG_FILEPATH_ATTRIBUTES	"configs/randomattributes/attributes.cfg"
+#define CONFIG_FILEPATH_SETTINGS	"configs/randomattributes/settings.cfg"
 #define INDEX_MAX_LENGTH 	512
 
 enum
@@ -16,13 +17,13 @@ enum
 	ConfigAttributeType_Float,
 }
 
-void Config_Refresh()
+void Config_RefreshAttributes()
 {
 	if (!g_cvEnabled.BoolValue)
 		return;
 	
 	char sConfigPath[PLATFORM_MAX_PATH];
-	BuildPath(Path_SM, sConfigPath, sizeof(sConfigPath), CONFIG_FILEPATH);
+	BuildPath(Path_SM, sConfigPath, sizeof(sConfigPath), CONFIG_FILEPATH_ATTRIBUTES);
 	if (!FileExists(sConfigPath))
 	{
 		SetFailState("Config file for Random Attributes is missing! (%s)", sConfigPath);
@@ -91,7 +92,7 @@ void Config_Refresh()
 			iAttribCount++;
 		}
 	}
-	while (kv.GotoNextKey() || iAttribCount >= MAX_ATTRIBUTES);
+	while (kv.GotoNextKey());
 	
 	g_iAttributeAmount = iAttribCount;
 	delete kv;
@@ -108,4 +109,123 @@ void Config_Refresh()
 			}
 		}
 	}
+}
+
+void Config_RefreshSettings()
+{
+	if (!g_cvEnabled.BoolValue)
+		return;
+	
+	char sConfigPath[PLATFORM_MAX_PATH];
+	BuildPath(Path_SM, sConfigPath, sizeof(sConfigPath), CONFIG_FILEPATH_SETTINGS);
+	if (!FileExists(sConfigPath))
+	{
+		PrintToServer("Settings config file for Random Attributes is missing! (%s)\nSettings will be unchanged.", sConfigPath);
+		return;
+	}
+
+	KeyValues kv = new KeyValues("Settings");
+	if (!kv.ImportFromFile(sConfigPath))
+	{
+		PrintToServer("Settings config file for Random Attributes could not find Settings!\nSettings will be unchanged.");
+		return;
+	}
+	
+	int iAmount, iActiveOnly, iApplyOnCreation, iRerollDeath, iRerollSlot;
+	
+	if (kv.JumpToKey("Default"))
+	{
+		iAmount = kv.GetNum("amount", -1);
+		iActiveOnly = kv.GetNum("active_only", -1);
+		iApplyOnCreation = kv.GetNum("apply_on_weapon_creation", -1);
+		iRerollDeath = kv.GetNum("reroll_on_death", -1);
+		iRerollSlot = kv.GetNum("reroll_on_slot_change", -1);
+		
+		kv.GoBack();
+	}
+	
+	bool bDone = false;
+	ConVar cvGamemode;
+	cvGamemode = FindConVar("redsun_currentgamemode");
+	
+	if (cvGamemode != INVALID_HANDLE)
+	{
+		if (kv.JumpToKey("RedSunGamemode"))
+		{
+			char sGamemodeName[64];
+			cvGamemode.GetString(sGamemodeName, sizeof(sGamemodeName));
+			
+			if (kv.GotoFirstSubKey())
+			{
+				do
+				{
+					char sCompare[64];
+					kv.GetSectionName(sCompare, sizeof(sCompare));
+					
+					if (!StrEqual(sGamemodeName, sCompare, false))
+						continue;
+					
+					iAmount = kv.GetNum("amount", iAmount);
+					iActiveOnly = kv.GetNum("active_only", iActiveOnly);
+					iApplyOnCreation = kv.GetNum("apply_on_weapon_creation", iApplyOnCreation);
+					iRerollDeath = kv.GetNum("reroll_on_death", iRerollDeath);
+					iRerollSlot = kv.GetNum("reroll_on_slot_change", iRerollSlot);
+					
+					bDone = true;
+				}
+				while (kv.GotoNextKey() && !bDone);
+				
+				kv.GoBack();
+			}
+			kv.GoBack();
+		}
+	}
+
+	if (kv.JumpToKey("Map") && !bDone)
+	{
+		char sMapName[64];
+		GetCurrentMap(sMapName, sizeof(sMapName));
+		
+		if (kv.GotoFirstSubKey())
+		{
+			do
+			{
+				char sCompare[64];
+				kv.GetSectionName(sCompare, sizeof(sCompare));
+				
+				if (strncmp(sMapName, sCompare, sizeof(sCompare)) != 0)
+					continue;
+				
+				iAmount = kv.GetNum("amount", iAmount);
+				iActiveOnly = kv.GetNum("active_only", iActiveOnly);
+				iApplyOnCreation = kv.GetNum("apply_on_weapon_creation", iApplyOnCreation);
+				iRerollDeath = kv.GetNum("reroll_on_death", iRerollDeath);
+				iRerollSlot = kv.GetNum("reroll_on_slot_change", iRerollSlot);
+				
+				bDone = true;
+			}
+			while (kv.GotoNextKey() && !bDone);
+			
+			kv.GoBack();
+		}
+		kv.GoBack();
+	}
+	
+	delete kv;
+	
+	//Set each convar
+	if (iAmount >= 1)
+		g_cvAttributesPerWeapon.SetInt(iAmount);
+	
+	if (iActiveOnly >= 0)
+		g_cvActiveOnlyMode.SetInt(iActiveOnly);
+		
+	if (iApplyOnCreation >= 0)
+		g_cvApplyOnWeaponCreation.SetInt(iApplyOnCreation);
+	
+	if (iRerollDeath >= 0)
+		g_cvRerollDeath.SetInt(iRerollDeath);
+	
+	if (iRerollSlot >= 0)
+		g_cvRerollSlot.SetInt(iRerollSlot);
 }
