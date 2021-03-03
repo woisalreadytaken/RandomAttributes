@@ -3,13 +3,14 @@
 Super scuffed pseudo-gamemode that gives random attributes to weapons, made in a way that's compatible with vanilla and custom gamemodes.
 
 Currently deemed incomplete. It works fine, but is a bit rough internally.
+
 ## Dependencies
 - SourceMod 1.10
 - [TF2Attributes](https://forums.alliedmods.net/showthread.php?t=210221)
 - [TF2 Econ Data](https://forums.alliedmods.net/showthread.php?t=315011)
 
 ## ConVars & Commands
-Check [this wiki page](https://github.com/woisalreadytaken/RandomAttributes/wiki/ConVars-&-Commands) for the full list. As default values are intended for vanilla play, you may need to change them for custom gamemodes.
+Check [this wiki page](https://github.com/woisalreadytaken/RandomAttributes/wiki/ConVars-&-Commands) for the full list.
 
 ## Thanks To
 * [Mikusch](https://github.com/Mikusch) & [Red Sun Over Paradise](https://redsun.tf): helping me out with public playtesting.

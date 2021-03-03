@@ -12,7 +12,6 @@
 
 #define TF_MAXPLAYERS 		34	//32 clients + 1 for 0/world/console + 1 for replay/SourceTV
 #define MAX_WEAPON_SLOTS 	3
-#define MAX_ATTRIBUTES 		512
 #define PLACEHOLDER_LINE 	"-----------------------------------------"
 
 ConVar g_cvEnabled;
@@ -50,7 +49,7 @@ enum struct ClientAttribute
 
 #include "randomattributes/config.sp"
 #include "randomattributes/convar.sp"
-#include "randomattributes/command.sp"	//not much here, but may as well do it for consistency
+#include "randomattributes/command.sp"
 #include "randomattributes/event.sp"
 
 public Plugin myinfo =
@@ -71,6 +70,13 @@ public void OnPluginStart()
 	Enable();
 }
 
+public void OnConfigsExecuted()
+{
+	if (!g_cvEnabled.BoolValue)
+		return;
+	
+	Config_RefreshSettings();
+}
 public void OnClientPutInServer(int iClient)
 {
 	if (!g_cvEnabled.BoolValue)
@@ -186,7 +192,7 @@ public void Enable()
 			g_aClientAttributes[iClient][iSlot] = new ArrayList(sizeof(ClientAttribute));
 	}
 	
-	Config_Refresh();
+	Config_RefreshAttributes();
 }
 
 public void Disable()
