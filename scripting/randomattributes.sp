@@ -185,11 +185,19 @@ public void Enable()
 		return;
 	
 	g_aAttributes = new ArrayList(sizeof(ConfigAttribute));
-		
+	bool bSettingsLoaded = false;
+	
 	for (int iClient = 1; iClient <= MaxClients; iClient++)
 	{
 		for (int iSlot = 0; iSlot <= TFWeaponSlot_Melee; iSlot++)
 			g_aClientAttributes[iClient][iSlot] = new ArrayList(sizeof(ClientAttribute));
+		
+		//In case the plugin is enabled mid-match, load the settings config too if there's at least one player ingame
+		if (!bSettingsLoaded && IsClientInGame(iClient))
+		{
+			Config_RefreshSettings();
+			bSettingsLoaded = true;
+		}
 	}
 	
 	Config_RefreshAttributes();
