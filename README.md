@@ -1,6 +1,6 @@
 # RandomAttributes
 
-Super scuffed pseudo-gamemode that gives random attributes to weapons, made in a way that's compatible with vanilla and custom gamemodes.
+Scuffed pseudo-gamemode that gives random attributes to weapons, made in a way that's compatible with vanilla and custom gamemodes.
 
 Currently deemed incomplete. It works fine, but is a bit rough internally.
 
@@ -9,7 +9,7 @@ Currently deemed incomplete. It works fine, but is a bit rough internally.
 - [TF2Attributes](https://forums.alliedmods.net/showthread.php?t=210221)
 - [TF2 Econ Data](https://forums.alliedmods.net/showthread.php?t=315011)
 
-## ConVars & Commands
+## Commands & Convars
 Check [this wiki page](https://github.com/woisalreadytaken/RandomAttributes/wiki/ConVars-&-Commands) for the full list.
 
 ## Thanks To
