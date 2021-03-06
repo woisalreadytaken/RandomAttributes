@@ -10,7 +10,7 @@ Currently deemed incomplete. It works fine, but is a bit rough internally.
 - [TF2 Econ Data](https://forums.alliedmods.net/showthread.php?t=315011)
 
 ## Commands & ConVars
-Check [this wiki page](https://github.com/woisalreadytaken/RandomAttributes/wiki/ConVars-&-Commands) for the full list.
+Check [this wiki page](https://github.com/woisalreadytaken/RandomAttributes/wiki/Commands-&-ConVars) for the full list.
 
 ## Thanks To
 * [Mikusch](https://github.com/Mikusch) & [Red Sun Over Paradise](https://redsun.tf): helping me out with public playtesting.
