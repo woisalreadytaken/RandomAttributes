@@ -16,7 +16,6 @@
 
 ConVar g_cvEnabled;
 ConVar g_cvActiveOnlyMode;
-ConVar g_cvApplyOnWeaponCreation;
 ConVar g_cvAttributesPerWeapon;
 ConVar g_cvAttributesPerWeaponUpdate;
 ConVar g_cvRerollDeath;
@@ -87,7 +86,7 @@ public void OnClientPutInServer(int iClient)
 
 public void OnEntityCreated(int iEntity, const char[] sClassname)
 {
-	if (!g_cvEnabled.BoolValue || !g_cvApplyOnWeaponCreation.BoolValue)
+	if (!g_cvEnabled.BoolValue)
 		return;
 	
 	if (StrContains(sClassname, "tf_weapon") == 0 || StrContains(sClassname, "tf_wearable") == 0)
@@ -159,7 +158,7 @@ public void Frame_ApplyOnWeaponSpawn(int iWeapon)
 	if (iSlot <= TFWeaponSlot_Melee)
 	{
 		if (g_cvRerollSlot.BoolValue)
-			UpdateClientSlot(iClient, iSlot, false);
+			UpdateClientSlot(iClient, iSlot);
 		
 		ApplyToWeapon(iWeapon, iClient, iSlot);
 	}
@@ -243,14 +242,6 @@ void UpdateClientSlot(int iClient, int iSlot, bool bRefresh = true)
 	g_aClientAttributes[iClient][iSlot].Clear();
 	g_bDisplayedAttributes[iClient][iSlot] = false;
 	
-	if (bRefresh && IsClientInGame(iClient))
-	{
-		int iWeapon = GetPlayerWeaponSlot(iClient, iSlot);
-	
-		if (iWeapon > MaxClients && IsValidEdict(iWeapon))
-			TF2Attrib_RemoveAll(iWeapon);
-	}
-	
 	//If Active Only mode is, heh, active, add the 'provide on active' attribute first
 	if (g_cvActiveOnlyMode.BoolValue)
 	{
@@ -281,6 +272,14 @@ void UpdateClientSlot(int iClient, int iSlot, bool bRefresh = true)
 		}
 		
 		g_aClientAttributes[iClient][iSlot].PushArray(attributeClient);
+	}
+	
+	if (bRefresh && IsClientInGame(iClient))
+	{
+		int iWeapon = GetPlayerWeaponSlot(iClient, iSlot);
+	
+		if (iWeapon > MaxClients && IsValidEdict(iWeapon))
+			TF2Attrib_RemoveAll(iWeapon);
 	}
 }
 
@@ -314,10 +313,10 @@ void ApplyToWeapon(int iWeapon, int iClient, int iSlot)
 	}
 	
 	TF2Attrib_ClearCache(iWeapon);
-	DisplaySlotAttributeNames(iClient, iSlot);
+	DisplaySlotAttributes(iClient, iSlot);
 }
 
-void DisplaySlotAttributeNames(int iClient, int iSlot)
+void DisplaySlotAttributes(int iClient, int iSlot)
 {
 	if (g_bDisplayedAttributes[iClient][iSlot])
 		return;
