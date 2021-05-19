@@ -285,7 +285,7 @@ void UpdateClientSlot(int iClient, int iSlot, bool bRefresh = true)
 
 void ApplyToClientSlot(int iClient, int iSlot)
 {
-	if (IsClientInGame(iClient) && IsPlayerAlive(iClient))
+	if (IsClientInGame(iClient))
 	{
 		int iWeapon = GetPlayerWeaponSlot(iClient, iSlot); 
 		ApplyToWeapon(iWeapon, iClient, iSlot);

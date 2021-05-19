@@ -28,7 +28,13 @@ public Action Event_PlayerDeath(Event event, const char[] sName, bool bDontBroad
 	bool bDeadRinger = (event.GetInt("death_flags") & TF_DEATHFLAG_DEADRINGER) != 0;
 	
 	if (!bDeadRinger && ((0 < iAttacker <= MaxClients && IsClientInGame(iAttacker) && iClient != iAttacker) || g_cvRerollDeath.IntValue >= 2))
-		UpdateClient(iClient);
+	{
+		for (int iSlot = 0; iSlot <= TFWeaponSlot_Melee; iSlot++)
+		{
+			UpdateClientSlot(iClient, iSlot);
+			ApplyToClientSlot(iClient, iSlot);
+		}
+	}
 	
 	return Plugin_Continue;
 }
