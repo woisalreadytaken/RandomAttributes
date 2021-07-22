@@ -131,13 +131,12 @@ void Config_RefreshSettings()
 		return;
 	}
 	
-	int iAmount, iActiveOnly, iApplyOnCreation, iRerollDeath, iRerollSlot;
+	int iAmount, iActiveOnly, iRerollDeath, iRerollSlot;
 	
 	if (kv.JumpToKey("Default"))
 	{
 		iAmount = kv.GetNum("amount", -1);
 		iActiveOnly = kv.GetNum("active_only", -1);
-		iApplyOnCreation = kv.GetNum("apply_on_weapon_creation", -1);
 		iRerollDeath = kv.GetNum("reroll_on_death", -1);
 		iRerollSlot = kv.GetNum("reroll_on_slot_change", -1);
 		
@@ -166,7 +165,6 @@ void Config_RefreshSettings()
 					
 					iAmount = kv.GetNum("amount", iAmount);
 					iActiveOnly = kv.GetNum("active_only", iActiveOnly);
-					iApplyOnCreation = kv.GetNum("apply_on_weapon_creation", iApplyOnCreation);
 					iRerollDeath = kv.GetNum("reroll_on_death", iRerollDeath);
 					iRerollSlot = kv.GetNum("reroll_on_slot_change", iRerollSlot);
 					
@@ -197,7 +195,6 @@ void Config_RefreshSettings()
 				
 				iAmount = kv.GetNum("amount", iAmount);
 				iActiveOnly = kv.GetNum("active_only", iActiveOnly);
-				iApplyOnCreation = kv.GetNum("apply_on_weapon_creation", iApplyOnCreation);
 				iRerollDeath = kv.GetNum("reroll_on_death", iRerollDeath);
 				iRerollSlot = kv.GetNum("reroll_on_slot_change", iRerollSlot);
 				
@@ -218,9 +215,6 @@ void Config_RefreshSettings()
 	
 	if (iActiveOnly >= 0)
 		g_cvActiveOnlyMode.SetInt(iActiveOnly);
-		
-	if (iApplyOnCreation >= 0)
-		g_cvApplyOnWeaponCreation.SetInt(iApplyOnCreation);
 	
 	if (iRerollDeath >= 0)
 		g_cvRerollDeath.SetInt(iRerollDeath);
