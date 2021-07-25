@@ -11,8 +11,11 @@ public Action Event_RoundEnd(Event event, const char[] sName, bool bDontBroadcas
 	
 	for (int iClient = 1; iClient <= MaxClients; iClient++)
 	{
-		if (IsClientInGame(iClient))
-			UpdateClient(iClient);
+		for (int iSlot = 0; iSlot <= TFWeaponSlot_Melee; iSlot++)
+		{
+			UpdateClientSlot(iClient, iSlot);
+			ApplyToClientSlot(iClient, iSlot);
+		}
 	}
 	
 	return Plugin_Continue;
