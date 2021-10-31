@@ -152,7 +152,7 @@ public void Frame_ApplyOnWeaponSpawn(int iWeapon)
 	{
 		iSlot = TFWeaponSlot_Primary;
 	}
-	else if (StrEqual(sClassname, "tf_weapon_builder"))
+	else if (StrEqual(sClassname, "tf_weapon_builder") || StrEqual(sClassname, "tf_weapon_sapper"))
 	{
 		iSlot = TFWeaponSlot_Secondary;
 	}
