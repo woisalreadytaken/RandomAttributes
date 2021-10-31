@@ -8,7 +8,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define PLUGIN_VERSION		"0.6"
+#define PLUGIN_VERSION		"0.7"
 
 #define TF_MAXPLAYERS 		34	//32 clients + 1 for 0/world/console + 1 for replay/SourceTV
 #define MAX_WEAPON_SLOTS 	3
@@ -50,6 +50,8 @@ enum struct ClientAttribute
 #include "randomattributes/convar.sp"
 #include "randomattributes/command.sp"
 #include "randomattributes/event.sp"
+#include "randomattributes/sdkcall.sp"
+#include "randomattributes/text.sp"
 
 public Plugin myinfo =
 {
@@ -65,6 +67,12 @@ public void OnPluginStart()
 	ConVar_Init();
 	Command_Init();
 	Event_Init();
+	
+	GameData hGameData = new GameData("randomattributes");
+	if (hGameData == null)
+		SetFailState("Could not find randomattributes gamedata!");
+	SDKCall_Init(hGameData);
+	delete hGameData;
 	
 	Enable();
 }
@@ -117,7 +125,7 @@ public void Hook_WeaponSpawn(int iWeapon)
 	GetEntityClassname(iWeapon, sClassname, sizeof(sClassname));
 	
 	//Sappers aren't secondaries, and we want to randomize them too. We also need a frame to know who's getting the weapon
-	if ((iSlot <= TFWeaponSlot_Melee && iSlot != -1) || (StrEqual(sClassname, "tf_weapon_builder") && iIndex != 28))
+	if ((iSlot <= TFWeaponSlot_Melee && iSlot != -1) || (StrEqual(sClassname, "tf_weapon_builder") && iIndex != 28) || StrEqual(sClassname, "tf_weapon_sapper"))
 		RequestFrame(Frame_ApplyOnWeaponSpawn, iWeapon);
 	
 	//Unhooking it here because otherwise it gets called twice... for some reason...
@@ -146,11 +154,12 @@ public void Frame_ApplyOnWeaponSpawn(int iWeapon)
 	//fuck spies (engineer builder is already ignored at this point)
 	char sClassname[32];
 	GetEntityClassname(iWeapon, sClassname, sizeof(sClassname));
+	
 	if (StrEqual(sClassname, "tf_weapon_revolver"))
 	{
 		iSlot = TFWeaponSlot_Primary;
 	}
-	else if (StrEqual(sClassname, "tf_weapon_builder"))
+	else if (StrEqual(sClassname, "tf_weapon_builder") || StrEqual(sClassname, "tf_weapon_sapper"))
 	{
 		iSlot = TFWeaponSlot_Secondary;
 	}
@@ -210,7 +219,7 @@ public void Disable()
 			for (int iSlot = 0; iSlot <= TFWeaponSlot_Melee; iSlot++)
 			{
 				g_aClientAttributes[iClient][iSlot].Clear();
-				int iWeapon = GetPlayerWeaponSlot(iClient, iSlot);
+				int iWeapon = TF2_GetItemInSlot(iClient, iSlot);
 				
 				if (iWeapon > MaxClients && IsValidEdict(iWeapon))
 				{
@@ -275,7 +284,7 @@ void UpdateClientSlot(int iClient, int iSlot, bool bRefresh = true)
 	
 	if (bRefresh && IsClientInGame(iClient))
 	{
-		int iWeapon = GetPlayerWeaponSlot(iClient, iSlot);
+		int iWeapon = TF2_GetItemInSlot(iClient, iSlot);
 	
 		if (iWeapon > MaxClients && IsValidEdict(iWeapon))
 			TF2Attrib_RemoveAll(iWeapon);
@@ -286,7 +295,7 @@ void ApplyToClientSlot(int iClient, int iSlot)
 {
 	if (IsClientInGame(iClient))
 	{
-		int iWeapon = GetPlayerWeaponSlot(iClient, iSlot); 
+		int iWeapon = TF2_GetItemInSlot(iClient, iSlot); 
 		ApplyToWeapon(iWeapon, iClient, iSlot);
 	}
 }
@@ -312,30 +321,19 @@ void ApplyToWeapon(int iWeapon, int iClient, int iSlot)
 	}
 	
 	TF2Attrib_ClearCache(iWeapon);
-	DisplaySlotAttributes(iClient, iSlot);
 }
 
-void DisplaySlotAttributes(int iClient, int iSlot)
+stock int TF2_GetItemInSlot(int iClient, int iSlot)
 {
-	if (g_bDisplayedAttributes[iClient][iSlot])
-		return;
-	
-	char sAttributes[1024];
-	Format(sAttributes, sizeof(sAttributes), "%s\n%s\n%s\n", PLACEHOLDER_LINE, g_sSlotName[iSlot], PLACEHOLDER_LINE);
-	
-	int iLength = g_aClientAttributes[iClient][iSlot].Length;
-	
-	for (int i = 0; i < iLength; i++)
+	int iWeapon = GetPlayerWeaponSlot(iClient, iSlot);
+	if (!IsValidEdict(iWeapon))
 	{
-		ClientAttribute attribute;
-		g_aClientAttributes[iClient][iSlot].GetArray(i, attribute);
+		//If a weapon was not found in slot, check if it's a wearable
+		int iWearable = SDKCall_GetEquippedWearableForLoadoutSlot(iClient, iSlot);
 		
-		char sAttribute[128];
-		TF2Econ_GetAttributeName(attribute.iIndex, sAttribute, sizeof(sAttribute));
-		Format(sAttribute, sizeof(sAttribute), "%s: %.2f\n", sAttribute, attribute.flValue);
-		StrCat(sAttributes, sizeof(sAttributes), sAttribute);
+		if (IsValidEdict(iWearable))
+			iWeapon = iWearable;
 	}
 	
-	PrintToConsole(iClient, sAttributes);
-	g_bDisplayedAttributes[iClient][iSlot] = true;
+	return iWeapon;
 }
