@@ -49,12 +49,7 @@ public Action Event_PostInventoryApplication(Event event, const char[] sName, bo
 		return Plugin_Continue;
 	
 	int iClient = GetClientOfUserId(event.GetInt("userid"));
-	
-	for (int iSlot = 0; iSlot <= TFWeaponSlot_Melee; iSlot++)
-	{
-		if (!g_bDisplayedAttributes[iClient][iSlot] && TF2_GetItemInSlot(iClient, iSlot) != -1)
-			DisplaySlotAttributes(iClient, iSlot);
-	}
+	RequestFrame(Frame_DisplayClientAttributes, iClient);
 	
 	return Plugin_Continue;
 }

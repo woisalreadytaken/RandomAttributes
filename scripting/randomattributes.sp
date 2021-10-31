@@ -12,7 +12,7 @@
 
 #define TF_MAXPLAYERS 		34	//32 clients + 1 for 0/world/console + 1 for replay/SourceTV
 #define MAX_WEAPON_SLOTS 	3
-#define PLACEHOLDER_LINE 	"-----------------------------------------"
+#define PLACEHOLDER_LINE 	"----------------------------------------"
 
 ConVar g_cvEnabled;
 ConVar g_cvActiveOnlyMode;
@@ -321,6 +321,9 @@ void ApplyToWeapon(int iWeapon, int iClient, int iSlot)
 	}
 	
 	TF2Attrib_ClearCache(iWeapon);
+	
+	//Display in case it was just refreshed
+	RequestFrame(Frame_DisplayClientAttributes, iClient);
 }
 
 stock int TF2_GetItemInSlot(int iClient, int iSlot)

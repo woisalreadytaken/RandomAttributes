@@ -62,6 +62,9 @@ stock void SendTextMsgOne(const int iClient, const char[] sMessage, const char[]
 
 void DisplaySlotAttributes(int iClient, int iSlot)
 {
+	if (g_bDisplayedAttributes[iClient][iSlot] || !IsPlayerAlive(iClient) || !IsValidEdict(TF2_GetItemInSlot(iClient, iSlot)))
+		return;
+	
 	char sSlotName[128];
 	Format(sSlotName, sizeof(sSlotName), "%s\n%s\n%s\n", PLACEHOLDER_LINE, g_sSlotName[iSlot], PLACEHOLDER_LINE);
 	SendTextMsgOne(iClient, sSlotName);
@@ -99,4 +102,13 @@ void DisplaySlotAttributes(int iClient, int iSlot)
 	// Lazy empty new line so the attributes dont get too mixed with console messages
 	SendTextMsgOne(iClient, " ");
 	g_bDisplayedAttributes[iClient][iSlot] = true;
+}
+
+void Frame_DisplayClientAttributes(int iClient)
+{
+	if (iClient <= 0 || iClient > MaxClients || !IsClientInGame(iClient))
+		return;
+	
+	for (int iSlot = 0; iSlot <= TFWeaponSlot_Melee; iSlot++)
+		DisplaySlotAttributes(iClient, iSlot);
 }
