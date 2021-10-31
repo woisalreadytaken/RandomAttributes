@@ -62,9 +62,9 @@ stock void SendTextMsgOne(const int iClient, const char[] sMessage, const char[]
 
 void DisplaySlotAttributes(int iClient, int iSlot)
 {
-	char sAttributes[128];
-	Format(sAttributes, sizeof(sAttributes), "%s\n%s\n%s\n", PLACEHOLDER_LINE, g_sSlotName[iSlot], PLACEHOLDER_LINE);
-	SendTextMsgOne(iClient, sAttributes);
+	char sSlotName[128];
+	Format(sSlotName, sizeof(sSlotName), "%s\n%s\n%s\n", PLACEHOLDER_LINE, g_sSlotName[iSlot], PLACEHOLDER_LINE);
+	SendTextMsgOne(iClient, sSlotName);
 	
 	int iLength = g_aClientAttributes[iClient][iSlot].Length;
 	
