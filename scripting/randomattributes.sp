@@ -50,6 +50,7 @@ enum struct ClientAttribute
 #include "randomattributes/convar.sp"
 #include "randomattributes/command.sp"
 #include "randomattributes/event.sp"
+#include "randomattributes/text.sp"
 
 public Plugin myinfo =
 {
@@ -146,6 +147,7 @@ public void Frame_ApplyOnWeaponSpawn(int iWeapon)
 	//fuck spies (engineer builder is already ignored at this point)
 	char sClassname[32];
 	GetEntityClassname(iWeapon, sClassname, sizeof(sClassname));
+	
 	if (StrEqual(sClassname, "tf_weapon_revolver"))
 	{
 		iSlot = TFWeaponSlot_Primary;
@@ -313,29 +315,4 @@ void ApplyToWeapon(int iWeapon, int iClient, int iSlot)
 	
 	TF2Attrib_ClearCache(iWeapon);
 	DisplaySlotAttributes(iClient, iSlot);
-}
-
-void DisplaySlotAttributes(int iClient, int iSlot)
-{
-	if (g_bDisplayedAttributes[iClient][iSlot])
-		return;
-	
-	char sAttributes[1024];
-	Format(sAttributes, sizeof(sAttributes), "%s\n%s\n%s\n", PLACEHOLDER_LINE, g_sSlotName[iSlot], PLACEHOLDER_LINE);
-	
-	int iLength = g_aClientAttributes[iClient][iSlot].Length;
-	
-	for (int i = 0; i < iLength; i++)
-	{
-		ClientAttribute attribute;
-		g_aClientAttributes[iClient][iSlot].GetArray(i, attribute);
-		
-		char sAttribute[128];
-		TF2Econ_GetAttributeName(attribute.iIndex, sAttribute, sizeof(sAttribute));
-		Format(sAttribute, sizeof(sAttribute), "%s: %.2f\n", sAttribute, attribute.flValue);
-		StrCat(sAttributes, sizeof(sAttributes), sAttribute);
-	}
-	
-	PrintToConsole(iClient, sAttributes);
-	g_bDisplayedAttributes[iClient][iSlot] = true;
 }
