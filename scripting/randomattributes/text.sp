@@ -62,9 +62,6 @@ stock void SendTextMsgOne(const int iClient, const char[] sMessage, const char[]
 
 void DisplaySlotAttributes(int iClient, int iSlot)
 {
-	if (g_bDisplayedAttributes[iClient][iSlot])
-		return;
-	
 	char sAttributes[128];
 	Format(sAttributes, sizeof(sAttributes), "%s\n%s\n%s\n", PLACEHOLDER_LINE, g_sSlotName[iSlot], PLACEHOLDER_LINE);
 	SendTextMsgOne(iClient, sAttributes);

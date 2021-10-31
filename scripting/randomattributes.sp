@@ -314,5 +314,4 @@ void ApplyToWeapon(int iWeapon, int iClient, int iSlot)
 	}
 	
 	TF2Attrib_ClearCache(iWeapon);
-	DisplaySlotAttributes(iClient, iSlot);
 }
