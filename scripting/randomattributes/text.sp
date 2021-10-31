@@ -96,5 +96,7 @@ void DisplaySlotAttributes(int iClient, int iSlot)
 		}	
 	}
 	
+	// Lazy empty new line so the attributes dont get too mixed with console messages
+	SendTextMsgOne(iClient, " ");
 	g_bDisplayedAttributes[iClient][iSlot] = true;
 }
