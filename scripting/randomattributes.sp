@@ -125,7 +125,7 @@ public void Hook_WeaponSpawn(int iWeapon)
 	GetEntityClassname(iWeapon, sClassname, sizeof(sClassname));
 	
 	//Sappers aren't secondaries, and we want to randomize them too. We also need a frame to know who's getting the weapon
-	if ((iSlot <= TFWeaponSlot_Melee && iSlot != -1) || (StrEqual(sClassname, "tf_weapon_builder") && iIndex != 28))
+	if ((iSlot <= TFWeaponSlot_Melee && iSlot != -1) || (StrEqual(sClassname, "tf_weapon_builder") && iIndex != 28) || StrEqual(sClassname, "tf_weapon_sapper"))
 		RequestFrame(Frame_ApplyOnWeaponSpawn, iWeapon);
 	
 	//Unhooking it here because otherwise it gets called twice... for some reason...
