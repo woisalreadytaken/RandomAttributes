@@ -50,6 +50,7 @@ enum struct ClientAttribute
 #include "randomattributes/convar.sp"
 #include "randomattributes/command.sp"
 #include "randomattributes/event.sp"
+#include "randomattributes/sdkcall.sp"
 #include "randomattributes/text.sp"
 
 public Plugin myinfo =
@@ -66,6 +67,12 @@ public void OnPluginStart()
 	ConVar_Init();
 	Command_Init();
 	Event_Init();
+	
+	GameData hGameData = new GameData("randomattributes");
+	if (hGameData == null)
+		SetFailState("Could not find randomattributes gamedata!");
+	SDKCall_Init(hGameData);
+	delete hGameData;
 	
 	Enable();
 }
@@ -212,7 +219,7 @@ public void Disable()
 			for (int iSlot = 0; iSlot <= TFWeaponSlot_Melee; iSlot++)
 			{
 				g_aClientAttributes[iClient][iSlot].Clear();
-				int iWeapon = GetPlayerWeaponSlot(iClient, iSlot);
+				int iWeapon = TF2_GetItemInSlot(iClient, iSlot);
 				
 				if (iWeapon > MaxClients && IsValidEdict(iWeapon))
 				{
@@ -277,7 +284,7 @@ void UpdateClientSlot(int iClient, int iSlot, bool bRefresh = true)
 	
 	if (bRefresh && IsClientInGame(iClient))
 	{
-		int iWeapon = GetPlayerWeaponSlot(iClient, iSlot);
+		int iWeapon = TF2_GetItemInSlot(iClient, iSlot);
 	
 		if (iWeapon > MaxClients && IsValidEdict(iWeapon))
 			TF2Attrib_RemoveAll(iWeapon);
@@ -288,7 +295,7 @@ void ApplyToClientSlot(int iClient, int iSlot)
 {
 	if (IsClientInGame(iClient))
 	{
-		int iWeapon = GetPlayerWeaponSlot(iClient, iSlot); 
+		int iWeapon = TF2_GetItemInSlot(iClient, iSlot); 
 		ApplyToWeapon(iWeapon, iClient, iSlot);
 	}
 }
@@ -314,4 +321,19 @@ void ApplyToWeapon(int iWeapon, int iClient, int iSlot)
 	}
 	
 	TF2Attrib_ClearCache(iWeapon);
+}
+
+stock int TF2_GetItemInSlot(int iClient, int iSlot)
+{
+	int iWeapon = GetPlayerWeaponSlot(iClient, iSlot);
+	if (!IsValidEdict(iWeapon))
+	{
+		//If a weapon was not found in slot, check if it's a wearable
+		int iWearable = SDKCall_GetEquippedWearableForLoadoutSlot(iClient, iSlot);
+		
+		if (IsValidEdict(iWearable))
+			iWeapon = iWearable;
+	}
+	
+	return iWeapon;
 }
