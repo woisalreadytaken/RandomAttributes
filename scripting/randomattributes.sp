@@ -177,7 +177,7 @@ public void Hook_DroppedWeaponSpawn(int iWeapon)
 {
 	//If attributes are given on weapon creation, attributes of the player will stack with previous attributes this dropped weapon had, and should be disabled in that case
 	TF2Attrib_RemoveAll(iWeapon);
-	SDKUnhook(iWeapon, SDKHook_Spawn, Hook_WeaponSpawn);
+	SDKUnhook(iWeapon, SDKHook_Spawn, Hook_DroppedWeaponSpawn);
 }
 
 public void OnPluginEnd()
