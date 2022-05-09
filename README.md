@@ -13,5 +13,5 @@ Currently deemed incomplete. It works fine, but is a bit rough internally.
 Check [this wiki page](https://github.com/woisalreadytaken/RandomAttributes/wiki/Commands-&-ConVars) for the full list.
 
 ## Thanks To
+* [42](https://github.com/FortyTwoFortyTwo): providing code related to displaying localized strings and letting me borrow him and the Red Sun dev server for occasional private testing.
 * [Mikusch](https://github.com/Mikusch) & [Red Sun Over Paradise](https://redsun.tf): helping me out with public playtesting.
-* [42](https://github.com/FortyTwoFortyTwo): letting me borrow him and the Red Sun dev server for occasional private testing.
