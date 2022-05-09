@@ -8,7 +8,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define PLUGIN_VERSION		"0.7"
+#define PLUGIN_VERSION		"0.8"
 
 #define TF_MAXPLAYERS 		34	//32 clients + 1 for 0/world/console + 1 for replay/SourceTV
 #define MAX_WEAPON_SLOTS 	3
@@ -177,7 +177,7 @@ public void Hook_DroppedWeaponSpawn(int iWeapon)
 {
 	//If attributes are given on weapon creation, attributes of the player will stack with previous attributes this dropped weapon had, and should be disabled in that case
 	TF2Attrib_RemoveAll(iWeapon);
-	SDKUnhook(iWeapon, SDKHook_Spawn, Hook_WeaponSpawn);
+	SDKUnhook(iWeapon, SDKHook_Spawn, Hook_DroppedWeaponSpawn);
 }
 
 public void OnPluginEnd()
@@ -271,7 +271,7 @@ void UpdateClientSlot(int iClient, int iSlot, bool bRefresh = true)
 		
 		attributeClient.iIndex = attributeConfig.iIndex;
 		
-		//Get the a random value between the max and min values set by the config
+		//Get a random value between the max and min values set by the config
 		switch (attributeConfig.iType)
 		{
 			case ConfigAttributeType_Int: attributeClient.flValue = float(GetRandomInt(RoundToNearest(attributeConfig.flMin), RoundToNearest(attributeConfig.flMax)));

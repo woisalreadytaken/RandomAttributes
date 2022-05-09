@@ -12,6 +12,8 @@ public Action Command_RefreshAttributesConfig(int iClient, int iArgs)
 	//Server already gets a message about this, so make it show to clients only
 	if (0 < iClient <= MaxClients && IsClientInGame(iClient))
 		ReplyToCommand(iClient, "Refreshed Random Attributes' attributes. It now sees %d attributes.", g_iAttributeAmount);
+		
+	return Plugin_Handled;
 }
 
 public Action Command_RefreshSettingsConfig(int iClient, int iArgs)
@@ -20,10 +22,14 @@ public Action Command_RefreshSettingsConfig(int iClient, int iArgs)
 	
 	if (0 < iClient <= MaxClients && IsClientInGame(iClient))
 		ReplyToCommand(iClient, "Attempted to refresh Random Attributes' map settings config.");
+		
+	return Plugin_Handled;
 }
 
 public Action Command_RefreshConfigs(int iClient, int iArgs)
 {
 	Command_RefreshAttributesConfig(iClient, iArgs);
 	Command_RefreshSettingsConfig(iClient, iArgs);
+	
+	return Plugin_Handled;
 }
