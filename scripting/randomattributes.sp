@@ -271,7 +271,7 @@ void UpdateClientSlot(int iClient, int iSlot, bool bRefresh = true)
 		
 		attributeClient.iIndex = attributeConfig.iIndex;
 		
-		//Get the a random value between the max and min values set by the config
+		//Get a random value between the max and min values set by the config
 		switch (attributeConfig.iType)
 		{
 			case ConfigAttributeType_Int: attributeClient.flValue = float(GetRandomInt(RoundToNearest(attributeConfig.flMin), RoundToNearest(attributeConfig.flMax)));
