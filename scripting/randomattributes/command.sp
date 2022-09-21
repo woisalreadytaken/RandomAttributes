@@ -9,7 +9,7 @@ public Action Command_RefreshAttributesConfig(int iClient, int iArgs)
 {
 	Config_RefreshAttributes();
 	
-	//Server already gets a message about this, so make it show to clients only
+	// Server already gets a message about this, so make it show to clients only
 	if (0 < iClient <= MaxClients && IsClientInGame(iClient))
 		ReplyToCommand(iClient, "Refreshed Random Attributes' attributes. It now sees %d attributes.", g_iAttributeAmount);
 		

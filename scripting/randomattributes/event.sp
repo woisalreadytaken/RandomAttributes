@@ -12,7 +12,7 @@ public Action Event_RoundEnd(Event event, const char[] sName, bool bDontBroadcas
 	
 	for (int iClient = 1; iClient <= MaxClients; iClient++)
 	{
-		for (int iSlot = 0; iSlot <= TFWeaponSlot_Melee; iSlot++)
+		for (int iSlot = TFWeaponSlot_Primary; iSlot <= TFWeaponSlot_Melee; iSlot++)
 		{
 			UpdateClientSlot(iClient, iSlot);
 			ApplyToClientSlot(iClient, iSlot);
@@ -33,7 +33,7 @@ public Action Event_PlayerDeath(Event event, const char[] sName, bool bDontBroad
 	
 	if (!bDeadRinger && ((0 < iAttacker <= MaxClients && IsClientInGame(iAttacker) && iClient != iAttacker) || g_cvRerollDeath.IntValue >= 2))
 	{
-		for (int iSlot = 0; iSlot <= TFWeaponSlot_Melee; iSlot++)
+		for (int iSlot = TFWeaponSlot_Primary; iSlot <= TFWeaponSlot_Melee; iSlot++)
 		{
 			UpdateClientSlot(iClient, iSlot);
 			ApplyToClientSlot(iClient, iSlot);

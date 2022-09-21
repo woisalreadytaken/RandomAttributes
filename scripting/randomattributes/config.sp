@@ -102,7 +102,7 @@ void Config_RefreshAttributes()
 	{
 		if (IsClientInGame(iClient))
 		{
-			for (int iSlot = 0; iSlot <= TFWeaponSlot_Melee; iSlot++)
+			for (int iSlot = TFWeaponSlot_Primary; iSlot <= TFWeaponSlot_Melee; iSlot++)
 			{
 				UpdateClientSlot(iClient, iSlot);
 				ApplyToClientSlot(iClient, iSlot);
@@ -132,6 +132,7 @@ void Config_RefreshSettings()
 	}
 	
 	int iAmount, iActiveOnly, iRerollDeath, iRerollSlot;
+	char sTeam[8];
 	
 	if (kv.JumpToKey("Default"))
 	{
@@ -139,6 +140,7 @@ void Config_RefreshSettings()
 		iActiveOnly = kv.GetNum("active_only", -1);
 		iRerollDeath = kv.GetNum("reroll_on_death", -1);
 		iRerollSlot = kv.GetNum("reroll_on_slot_change", -1);
+		kv.GetString("only_allow_team", sTeam, sizeof(sTeam));
 		
 		kv.GoBack();
 	}
@@ -167,6 +169,7 @@ void Config_RefreshSettings()
 					iActiveOnly = kv.GetNum("active_only", iActiveOnly);
 					iRerollDeath = kv.GetNum("reroll_on_death", iRerollDeath);
 					iRerollSlot = kv.GetNum("reroll_on_slot_change", iRerollSlot);
+					kv.GetString("only_allow_team", sTeam, sizeof(sTeam), sTeam);
 					
 					bDone = true;
 				}
@@ -197,6 +200,7 @@ void Config_RefreshSettings()
 				iActiveOnly = kv.GetNum("active_only", iActiveOnly);
 				iRerollDeath = kv.GetNum("reroll_on_death", iRerollDeath);
 				iRerollSlot = kv.GetNum("reroll_on_slot_change", iRerollSlot);
+				kv.GetString("only_allow_team", sTeam, sizeof(sTeam), sTeam);
 				
 				bDone = true;
 			}
@@ -209,7 +213,7 @@ void Config_RefreshSettings()
 	
 	delete kv;
 	
-	//Set each convar
+	// Set each convar
 	if (iAmount >= 1)
 		g_cvAttributesPerWeapon.SetInt(iAmount);
 	
@@ -221,4 +225,6 @@ void Config_RefreshSettings()
 	
 	if (iRerollSlot >= 0)
 		g_cvRerollSlot.SetInt(iRerollSlot);
+	
+	g_cvOnlyAllowTeam.SetString(sTeam);
 }
