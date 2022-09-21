@@ -1,4 +1,4 @@
-# RandomAttributes
+# Random Attributes
 
 Scuffed pseudo-gamemode that gives random attributes to weapons, made in a way that's compatible with vanilla and custom gamemodes.
 
