@@ -3,7 +3,7 @@ void ConVar_Init()
 	g_cvEnabled = CreateConVar("sm_ra_enabled", "1", "Is Random Attributes enabled?", _, true, 0.0, true, 1.0);
 	g_cvEnabled.AddChangeHook(ConVar_EnableChanged);
 	g_cvActiveOnlyMode = CreateConVar("sm_ra_activeonly", "0", "Forces the 'provide on active' attribute onto weapons, making (or at least trying its best to make) passive effects only work when a weapon with them is active.", _, true, 0.0, true, 1.0);
-	g_cvAttributesPerWeapon = CreateConVar("sm_ra_amount", "8", "Amount of random attributes to roll per weapon.", _, true, 1.0, true, 20.0);
+	g_cvAttributesPerWeapon = CreateConVar("sm_ra_amount", "20", "Amount of random attributes to roll per weapon.", _, true, 1.0, true, 20.0);
 	g_cvAttributesPerWeapon.AddChangeHook(ConVar_AmountChanged);
 	g_cvAttributesPerWeaponUpdate = CreateConVar("sm_ra_amountupdate", "0", "Should attributes be rerolled the moment sm_ra_amount is changed?\n0: No, update when it otherwise would\n1: Yes", _, true, 0.0, true, 1.0);
 	g_cvOnlyAllowTeam = CreateConVar("sm_ra_onlyallowteam", "", "Only allows the specified team to make use of this plugin's functionality. Accepts 'red' and 'blu(e)', anything else means we'll assume you're fine with both teams.");
