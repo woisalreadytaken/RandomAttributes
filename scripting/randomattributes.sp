@@ -25,6 +25,7 @@ ConVar g_cvRerollSlot;
 public ArrayList g_aAttributes;
 public ArrayList g_aClientAttributes[TF_MAXPLAYERS][MAX_WEAPON_SLOTS];
 public bool g_bDisplayedAttributes[TF_MAXPLAYERS][MAX_WEAPON_SLOTS];
+public bool g_bCanRemoveAttributes[TF_MAXPLAYERS];
 public TFTeam g_nActiveTeam;
 
 char g_sSlotName[][] = {
@@ -347,6 +348,8 @@ void ApplyToWeapon(int iWeapon, int iClient, int iSlot)
 	}
 	
 	TF2Attrib_ClearCache(iWeapon);
+	
+	g_bCanRemoveAttributes[iClient] = true;
 	
 	// Display in case it was just refreshed
 	RequestFrame(Frame_DisplayClientAttributes, iClient);

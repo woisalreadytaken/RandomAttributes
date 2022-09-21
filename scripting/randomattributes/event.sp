@@ -49,6 +49,24 @@ public Action Event_PostInventoryApplication(Event event, const char[] sName, bo
 		return Plugin_Continue;
 	
 	int iClient = GetClientOfUserId(event.GetInt("userid"));
+	
+	// Forcefully remove attributes if in the wrong team while the only-allow-team convar is enabled, but only once
+	if (g_nActiveTeam > TFTeam_Spectator && g_nActiveTeam != TF2_GetClientTeam(iClient) && g_bCanRemoveAttributes[iClient])
+	{
+		for (int iSlot = TFWeaponSlot_Primary; iSlot <= TFWeaponSlot_Melee; iSlot++)
+		{
+			int iWeapon = TF2_GetItemInSlot(iClient, iSlot);
+			
+			if (iWeapon > MaxClients)
+			{
+				TF2Attrib_RemoveAll(iWeapon);
+				TF2Attrib_ClearCache(iWeapon);
+			}
+		}
+		
+		g_bCanRemoveAttributes[iClient] = false;
+	}
+	
 	RequestFrame(Frame_DisplayClientAttributes, iClient);
 	
 	return Plugin_Continue;
