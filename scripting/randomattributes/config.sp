@@ -26,7 +26,7 @@ void Config_RefreshAttributes()
 	BuildPath(Path_SM, sConfigPath, sizeof(sConfigPath), CONFIG_FILEPATH_ATTRIBUTES);
 	if (!FileExists(sConfigPath))
 	{
-		SetFailState("Config file for Random Attributes is missing! (%s)", sConfigPath);
+		SetFailState("[Random Attributes] Attributes config file is missing! (%s)", sConfigPath);
 		return;
 	}
 	
@@ -35,13 +35,13 @@ void Config_RefreshAttributes()
 	KeyValues kv = new KeyValues("Attributes");
 	if (!kv.ImportFromFile(sConfigPath))
 	{
-		SetFailState("Config file for Random Attributes could not find Attributes!");
+		SetFailState("[Random Attributes] Config file for could not find Attributes!");
 		return;
 	}
 	
 	if (!kv.GotoFirstSubKey())
 	{
-		SetFailState("Config file for Random Attributes could not find first Attributes subkey!");
+		SetFailState("[Random Attributes] Config file could not find first Attributes subkey!");
 		return;
 	}
 	
@@ -65,7 +65,7 @@ void Config_RefreshAttributes()
 		}
 		else
 		{
-			LogError("Random Attributes config's index %s has an invalid type: %s", sIndex, sType);
+			LogError("[Random Attributes] Index %s in Attributes Config has an invalid type: %s", sIndex, sType);
 			continue;
 		}
 		
@@ -78,7 +78,7 @@ void Config_RefreshAttributes()
 			
 			if (!StringToIntEx(sArray[i], iIndex))
 			{
-				LogError("Random Attributes config couldn't read attribute index %s", sArray[i]);
+				LogError("[Random Attributes] Attributes config couldn't read attribute index %s", sArray[i]);
 				continue;
 			}
 			
@@ -94,9 +94,8 @@ void Config_RefreshAttributes()
 	}
 	while (kv.GotoNextKey());
 	
-	g_iAttributeAmount = iAttribCount;
 	delete kv;
-	PrintToServer("Loaded Random Attributes' config with %d attributes.", iAttribCount);
+	PrintToServer("[Random Attributes] Loaded Attributes config with %d attributes.", g_aAttributes.Length);
 	
 	for (int iClient = 1; iClient <= MaxClients; iClient++)
 	{
@@ -120,19 +119,19 @@ void Config_RefreshSettings()
 	BuildPath(Path_SM, sConfigPath, sizeof(sConfigPath), CONFIG_FILEPATH_SETTINGS);
 	if (!FileExists(sConfigPath))
 	{
-		PrintToServer("Settings config file for Random Attributes is missing! (%s)\nSettings will be unchanged.", sConfigPath);
+		PrintToServer("[Random Attributes] Settings config file is missing! (%s)\nSettings will be unchanged.", sConfigPath);
 		return;
 	}
 
 	KeyValues kv = new KeyValues("Settings");
 	if (!kv.ImportFromFile(sConfigPath))
 	{
-		PrintToServer("Settings config file for Random Attributes could not find Settings!\nSettings will be unchanged.");
+		PrintToServer("[Random Attributes] Settings config file could not find Settings!\nSettings will be unchanged.");
 		return;
 	}
 	
 	int iAmount, iActiveOnly, iRerollDeath, iRerollSlot;
-	char sTeam[8];
+	char sTeam[8], sBlacklist[INDEX_MAX_LENGTH];
 	
 	if (kv.JumpToKey("Default"))
 	{
@@ -141,6 +140,7 @@ void Config_RefreshSettings()
 		iRerollDeath = kv.GetNum("reroll_on_death", -1);
 		iRerollSlot = kv.GetNum("reroll_on_slot_change", -1);
 		kv.GetString("only_allow_team", sTeam, sizeof(sTeam));
+		kv.GetString("blacklist", sBlacklist, sizeof(sBlacklist));	// Ideally this one shouldn't be used in Default, but may as well put it here
 		
 		kv.GoBack();
 	}
@@ -170,6 +170,7 @@ void Config_RefreshSettings()
 					iRerollDeath = kv.GetNum("reroll_on_death", iRerollDeath);
 					iRerollSlot = kv.GetNum("reroll_on_slot_change", iRerollSlot);
 					kv.GetString("only_allow_team", sTeam, sizeof(sTeam), sTeam);
+					kv.GetString("blacklist", sBlacklist, sizeof(sBlacklist), sBlacklist);
 					
 					bDone = true;
 				}
@@ -193,7 +194,7 @@ void Config_RefreshSettings()
 				char sCompare[64];
 				kv.GetSectionName(sCompare, sizeof(sCompare));
 				
-				if (strncmp(sMapName, sCompare, sizeof(sCompare)) != 0)
+				if (strncmp(sMapName, sCompare, strlen(sCompare)) != 0)
 					continue;
 				
 				iAmount = kv.GetNum("amount", iAmount);
@@ -201,6 +202,7 @@ void Config_RefreshSettings()
 				iRerollDeath = kv.GetNum("reroll_on_death", iRerollDeath);
 				iRerollSlot = kv.GetNum("reroll_on_slot_change", iRerollSlot);
 				kv.GetString("only_allow_team", sTeam, sizeof(sTeam), sTeam);
+				kv.GetString("blacklist", sBlacklist, sizeof(sBlacklist), sBlacklist);
 				
 				bDone = true;
 			}
@@ -213,7 +215,7 @@ void Config_RefreshSettings()
 	
 	delete kv;
 	
-	// Set each convar
+	// Set each value
 	if (iAmount >= 1)
 		g_cvAttributesPerWeapon.SetInt(iAmount);
 	
@@ -227,4 +229,33 @@ void Config_RefreshSettings()
 		g_cvRerollSlot.SetInt(iRerollSlot);
 	
 	g_cvOnlyAllowTeam.SetString(sTeam);
+	
+	if (sBlacklist[0] && g_aAttributes)
+	{
+		char[][] sArray = new char[INDEX_MAX_LENGTH][8];
+		int iLength = ExplodeString(sBlacklist, " ", sArray, INDEX_MAX_LENGTH, 8); 
+		int iCount;
+		
+		for (int i = 0; i < iLength; i++)
+		{
+			int iAttIndex;
+			
+			if (!StringToIntEx(sArray[i], iAttIndex))
+			{
+				LogError("[Random Attributes] Config Blacklist couldn't read attribute index %s", sArray[i]);
+				continue;
+			}
+			
+			int iArrayIndex = g_aAttributes.FindValue(iAttIndex, ConfigAttribute::iIndex);
+			
+			if (iArrayIndex > -1)
+			{
+				g_aAttributes.Erase(iArrayIndex);
+				iCount++;
+			}
+		}
+		
+		if (iCount)
+			PrintToServer("[Random Attributes] Removed %d blacklisted attributes (new count is %d).", iCount, g_aAttributes.Length);
+	}
 }

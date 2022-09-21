@@ -25,7 +25,6 @@ ConVar g_cvRerollSlot;
 public ArrayList g_aAttributes;
 public ArrayList g_aClientAttributes[TF_MAXPLAYERS][MAX_WEAPON_SLOTS];
 public bool g_bDisplayedAttributes[TF_MAXPLAYERS][MAX_WEAPON_SLOTS];
-public int g_iAttributeAmount;
 public TFTeam g_nActiveTeam;
 
 char g_sSlotName[][] = {
@@ -84,6 +83,7 @@ public void OnConfigsExecuted()
 	if (!g_cvEnabled.BoolValue)
 		return;
 	
+	Config_RefreshAttributes();
 	Config_RefreshSettings();
 }
 
@@ -199,19 +199,11 @@ public void Enable()
 		return;
 	
 	g_aAttributes = new ArrayList(sizeof(ConfigAttribute));
-	bool bSettingsLoaded = false;
 	
 	for (int iClient = 1; iClient <= MaxClients; iClient++)
 	{
 		for (int iSlot = TFWeaponSlot_Primary; iSlot <= TFWeaponSlot_Melee; iSlot++)
 			g_aClientAttributes[iClient][iSlot] = new ArrayList(sizeof(ClientAttribute));
-		
-		// In case the plugin is enabled mid-match, load the settings config too if there's at least one player ingame
-		if (!bSettingsLoaded && IsClientInGame(iClient))
-		{
-			Config_RefreshSettings();
-			bSettingsLoaded = true;
-		}
 	}
 	
 	// Check if the convar for only allowing one team to switch is modified
@@ -231,7 +223,9 @@ public void Enable()
 		g_nActiveTeam = TFTeam_Unassigned;
 	}
 	
+	// Refresh configs
 	Config_RefreshAttributes();
+	Config_RefreshSettings();
 }
 
 public void Disable()
@@ -295,7 +289,7 @@ void UpdateClientSlot(int iClient, int iSlot, bool bRefresh = true)
 		ConfigAttribute attributeConfig;
 		
 		// Get a random available attribute index
-		g_aAttributes.GetArray(GetRandomInt(0, g_iAttributeAmount-1), attributeConfig);
+		g_aAttributes.GetArray(GetRandomInt(0, g_aAttributes.Length - 1), attributeConfig);
 		
 		attributeClient.iIndex = attributeConfig.iIndex;
 		

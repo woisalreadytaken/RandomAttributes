@@ -11,7 +11,7 @@ public Action Command_RefreshAttributesConfig(int iClient, int iArgs)
 	
 	// Server already gets a message about this, so make it show to clients only
 	if (0 < iClient <= MaxClients && IsClientInGame(iClient))
-		ReplyToCommand(iClient, "Refreshed Random Attributes' attributes. It now sees %d attributes.", g_iAttributeAmount);
+		ReplyToCommand(iClient, "Refreshed Random Attributes' attributes. It now sees %d attributes.", g_aAttributes.Length);
 		
 	return Plugin_Handled;
 }
