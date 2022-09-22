@@ -36,10 +36,9 @@ void ConVar_AmountChanged(ConVar convar, const char[] oldValue, const char[] new
 	for (int iClient = 1; iClient <= MaxClients; iClient++)
 	{
 		UpdateClient(iClient);
-		{
-			for (int iSlot = TFWeaponSlot_Primary; iSlot <= TFWeaponSlot_Melee; iSlot++)
-				ApplyToClientSlot(iClient, iSlot);
-		}
+		
+		for (int iSlot = TFWeaponSlot_Primary; iSlot <= TFWeaponSlot_Melee; iSlot++)
+			ApplyToClientSlot(iClient, iSlot);
 	}
 }
 
