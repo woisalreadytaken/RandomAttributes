@@ -12,7 +12,7 @@ Currently deemed incomplete. It works fine, but is a bit rough internally.
 ## Commands
 |Command|Description|
 |-|-|
-|`sm_ra_refresh`|Refreshes the configs|
+|`sm_ra_refresh`|Refreshes Random Attributes' configs|
 
 ## ConVars
 |ConVar|Default Value<br>(is locked by settings config by default?)|Description|
