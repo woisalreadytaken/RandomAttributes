@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 #define CONFIG_FILEPATH_ATTRIBUTES	"configs/randomattributes/attributes.cfg"
 #define CONFIG_FILEPATH_SETTINGS	"configs/randomattributes/settings.cfg"
 #define INDEX_MAX_LENGTH 	512

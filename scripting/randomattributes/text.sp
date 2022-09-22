@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 enum
 {
 	ATTDESCFORM_VALUE_IS_PERCENTAGE,			// Printed as:	((m_flValue*100)-100.0)

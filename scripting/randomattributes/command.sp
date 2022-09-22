@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 void Command_Init()
 {
 	RegAdminCmd("sm_ra_refresh", Command_RefreshConfigs, ADMFLAG_RCON, "Refreshes Random Attributes' configs.");

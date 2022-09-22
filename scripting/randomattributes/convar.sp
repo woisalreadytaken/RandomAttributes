@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 void ConVar_Init()
 {
 	g_cvEnabled = CreateConVar("sm_ra_enabled", "1", "Is Random Attributes enabled?", _, true, 0.0, true, 1.0);

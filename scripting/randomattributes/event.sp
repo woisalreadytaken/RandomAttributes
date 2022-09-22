@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 void Event_Init()
 {
 	HookEvent("teamplay_round_win", Event_RoundEnd);
