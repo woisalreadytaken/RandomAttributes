@@ -223,10 +223,6 @@ public void Enable()
 	{
 		g_nActiveTeam = TFTeam_Unassigned;
 	}
-	
-	// Refresh configs
-	Config_RefreshAttributes();
-	Config_RefreshSettings();
 }
 
 public void Disable()

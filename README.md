@@ -12,9 +12,7 @@ Currently deemed incomplete. It works fine, but is a bit rough internally.
 ## Commands
 |Command|Description|
 |-|-|
-|`sm_ra_refreshattributes`|Refreshes the attributes config|
-|`sm_ra_refreshsettings`|Refreshes the settings config|
-|`sm_ra_refresh`|Refreshes both configs|
+|`sm_ra_refresh`|Refreshes the configs|
 
 ## ConVars
 |ConVar|Default Value<br>(is locked by settings config by default?)|Description|

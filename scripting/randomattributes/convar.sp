@@ -17,7 +17,14 @@ void ConVar_EnableChanged(ConVar convar, const char[] oldValue, const char[] new
 	switch (StringToInt(newValue))
 	{
 		case 0: Disable();
-		default: Enable();
+		default:
+		{
+			Enable();
+			
+			// Refresh configs
+			Config_RefreshAttributes();
+			Config_RefreshSettings();
+		}
 	}
 }
 
