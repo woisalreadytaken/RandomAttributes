@@ -189,6 +189,7 @@ void Config_RefreshSettings()
 	{
 		char sMapName[64];
 		GetCurrentMap(sMapName, sizeof(sMapName));
+		GetMapDisplayName(sMapName, sMapName, sizeof(sMapName));
 		
 		if (kv.GotoFirstSubKey())
 		{
