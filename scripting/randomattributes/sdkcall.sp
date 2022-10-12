@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static Handle g_hSDKCallGetEquippedWearableForLoadoutSlot;
 
 void SDKCall_Init(GameData hGameData)

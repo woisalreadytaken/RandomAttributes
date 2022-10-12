@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 void Event_Init()
 {
 	HookEvent("teamplay_round_win", Event_RoundEnd);
@@ -12,7 +15,7 @@ public Action Event_RoundEnd(Event event, const char[] sName, bool bDontBroadcas
 	
 	for (int iClient = 1; iClient <= MaxClients; iClient++)
 	{
-		for (int iSlot = 0; iSlot <= TFWeaponSlot_Melee; iSlot++)
+		for (int iSlot = TFWeaponSlot_Primary; iSlot <= TFWeaponSlot_Melee; iSlot++)
 		{
 			UpdateClientSlot(iClient, iSlot);
 			ApplyToClientSlot(iClient, iSlot);
@@ -33,7 +36,7 @@ public Action Event_PlayerDeath(Event event, const char[] sName, bool bDontBroad
 	
 	if (!bDeadRinger && ((0 < iAttacker <= MaxClients && IsClientInGame(iAttacker) && iClient != iAttacker) || g_cvRerollDeath.IntValue >= 2))
 	{
-		for (int iSlot = 0; iSlot <= TFWeaponSlot_Melee; iSlot++)
+		for (int iSlot = TFWeaponSlot_Primary; iSlot <= TFWeaponSlot_Melee; iSlot++)
 		{
 			UpdateClientSlot(iClient, iSlot);
 			ApplyToClientSlot(iClient, iSlot);
@@ -49,6 +52,24 @@ public Action Event_PostInventoryApplication(Event event, const char[] sName, bo
 		return Plugin_Continue;
 	
 	int iClient = GetClientOfUserId(event.GetInt("userid"));
+	
+	// Forcefully remove attributes if in the wrong team while the only-allow-team convar is enabled, but only once
+	if (g_nActiveTeam > TFTeam_Spectator && g_nActiveTeam != TF2_GetClientTeam(iClient) && g_bCanRemoveAttributes[iClient])
+	{
+		for (int iSlot = TFWeaponSlot_Primary; iSlot <= TFWeaponSlot_Melee; iSlot++)
+		{
+			int iWeapon = TF2_GetItemInSlot(iClient, iSlot);
+			
+			if (iWeapon > MaxClients)
+			{
+				TF2Attrib_RemoveAll(iWeapon);
+				TF2Attrib_ClearCache(iWeapon);
+			}
+		}
+		
+		g_bCanRemoveAttributes[iClient] = false;
+	}
+	
 	RequestFrame(Frame_DisplayClientAttributes, iClient);
 	
 	return Plugin_Continue;

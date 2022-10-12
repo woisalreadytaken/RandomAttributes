@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 enum
 {
 	ATTDESCFORM_VALUE_IS_PERCENTAGE,			// Printed as:	((m_flValue*100)-100.0)
@@ -49,7 +52,7 @@ stock void SendTextMsgOne(const int iClient, const char[] sMessage, const char[]
 {
 	BfWrite message = UserMessageToBfWrite(StartMessageOne("TextMsg", iClient, USERMSG_RELIABLE|USERMSG_BLOCKHOOKS));
 
-	message.WriteByte(2);	//HUD_PRINTCONSOLE
+	message.WriteByte(2);	// HUD_PRINTCONSOLE
 	message.WriteString(sMessage);
 	
 	message.WriteString(sParam1);
@@ -109,6 +112,6 @@ void Frame_DisplayClientAttributes(int iClient)
 	if (iClient <= 0 || iClient > MaxClients || !IsClientInGame(iClient))
 		return;
 	
-	for (int iSlot = 0; iSlot <= TFWeaponSlot_Melee; iSlot++)
+	for (int iSlot = TFWeaponSlot_Primary; iSlot <= TFWeaponSlot_Melee; iSlot++)
 		DisplaySlotAttributes(iClient, iSlot);
 }
