@@ -245,7 +245,7 @@ public void Disable()
 		}
 	}
 	
-	g_aAttributes.Clear();
+	delete g_aAttributes;
 
 }
 
@@ -259,6 +259,9 @@ void UpdateClient(int iClient, bool bRefresh = true)
 void UpdateClientSlot(int iClient, int iSlot, bool bRefresh = true)
 {
 	if (!g_cvEnabled.BoolValue)
+		return;
+	
+	if (!g_aAttributes.Length)
 		return;
 	
 	// Checking for the only-allow-team convar
@@ -322,6 +325,9 @@ void ApplyToClientSlot(int iClient, int iSlot)
 void ApplyToWeapon(int iWeapon, int iClient, int iSlot)
 {
 	if (iWeapon <= MaxClients || !IsValidEdict(iWeapon) || !IsClientInGame(iClient))
+		return;
+	
+	if (!g_aAttributes.Length)
 		return;
 	
 	// Checking for the only-allow-team convar
