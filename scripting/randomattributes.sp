@@ -10,7 +10,6 @@
 
 #define PLUGIN_VERSION		"0.9"
 
-#define TF_MAXPLAYERS 		34	// 32 clients + 1 for 0/world/console + 1 for replay/SourceTV
 #define MAX_WEAPON_SLOTS 	3
 #define PLACEHOLDER_LINE 	"----------------------------------------"
 
@@ -23,9 +22,9 @@ ConVar g_cvRerollDeath;
 ConVar g_cvRerollSlot;
 
 public ArrayList g_aAttributes;
-public ArrayList g_aClientAttributes[TF_MAXPLAYERS][MAX_WEAPON_SLOTS];
-public bool g_bDisplayedAttributes[TF_MAXPLAYERS][MAX_WEAPON_SLOTS];
-public bool g_bCanRemoveAttributes[TF_MAXPLAYERS];
+public ArrayList g_aClientAttributes[MAXPLAYERS][MAX_WEAPON_SLOTS];
+public bool g_bDisplayedAttributes[MAXPLAYERS][MAX_WEAPON_SLOTS];
+public bool g_bCanRemoveAttributes[MAXPLAYERS];
 public TFTeam g_nActiveTeam;
 
 char g_sSlotName[][] = {
