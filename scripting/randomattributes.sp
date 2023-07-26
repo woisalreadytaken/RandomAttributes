@@ -22,9 +22,9 @@ ConVar g_cvRerollDeath;
 ConVar g_cvRerollSlot;
 
 public ArrayList g_aAttributes;
-public ArrayList g_aClientAttributes[MAXPLAYERS][MAX_WEAPON_SLOTS];
-public bool g_bDisplayedAttributes[MAXPLAYERS][MAX_WEAPON_SLOTS];
-public bool g_bCanRemoveAttributes[MAXPLAYERS];
+public ArrayList g_aClientAttributes[MAXPLAYERS + 1][MAX_WEAPON_SLOTS];
+public bool g_bDisplayedAttributes[MAXPLAYERS + 1][MAX_WEAPON_SLOTS];
+public bool g_bCanRemoveAttributes[MAXPLAYERS + 1];
 public TFTeam g_nActiveTeam;
 
 char g_sSlotName[][] = {
