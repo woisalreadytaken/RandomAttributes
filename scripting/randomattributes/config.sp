@@ -72,7 +72,7 @@ void Config_RefreshAttributes()
 			continue;
 		}
 		
-		char[][] sArray = new char[INDEX_MAX_LENGTH][8];
+		char sArray[INDEX_MAX_LENGTH][8];
 		int iLength = ExplodeString(sIndex, " ", sArray, INDEX_MAX_LENGTH, 8);
 		
 		for (int i = 0; i < iLength; i++)

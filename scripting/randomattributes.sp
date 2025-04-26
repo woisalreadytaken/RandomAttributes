@@ -245,7 +245,6 @@ public void Disable()
 	}
 	
 	delete g_aAttributes;
-
 }
 
 void UpdateClient(int iClient, bool bRefresh = true)
